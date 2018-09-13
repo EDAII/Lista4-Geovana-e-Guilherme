@@ -21,14 +21,17 @@ class DrawTree extends JComponent {
         final BasicStroke wideStroke = new BasicStroke((float) 8.0);
 
         Dimension totalSize;
-        int height, width;
+        int width;
         Node r = null;
+        
+        Tree tree = null;
 
-        public void init(Node N, int x) {
+        public void init(Tree tree, int x) {
             // Initialize drawing colors
             setBackground(bg);
             setForeground(fg);
-            r = N;
+            r = tree.root;
+            this.tree = tree;
             width = x;
         }
 
@@ -65,6 +68,18 @@ class DrawTree extends JComponent {
                 return;
 
             inorder(r.left, x1, (x1 + x2) / 2, y + 40);
+            
+            Node parent = tree.getParent(r.value, tree.root);
+            
+            if (parent == null)
+                draw(x1, x2, y, r.value + "", 0);
+            else {
+                if (parent.value < r.value)
+                    draw(x1, x2, y, r.value + "", 2);
+                else
+                    draw(x1, x2, y, r.value + "", 1);
+            }
+            
             draw(x1, x2, y, String.valueOf(r.value) + "", 0);
             inorder(r.right, (x1 + x2) / 2, x2, y + 40);
         }

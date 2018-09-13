@@ -8,10 +8,13 @@ import javax.swing.JOptionPane;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import java.awt.event.ActionListener;
+import java.util.LinkedList;
+import java.util.Random;
 import java.awt.event.ActionEvent;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.util.Random;
 
 @SuppressWarnings("serial")
 public class Menu extends JFrame {
@@ -40,19 +43,7 @@ public class Menu extends JFrame {
 			
 		//separating label and first button
 		contentPane.add(Box.createRigidArea(new Dimension(40,40)));
-			
-		JButton btnShow = new JButton("Atualizar árvore");
-		btnShow.setAlignmentX(Component.CENTER_ALIGNMENT);
-		btnShow.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				applet.repaint();
-			}
-		});
-		contentPane.add(btnShow);
-			
-		// separating first and second button
-		contentPane.add(Box.createRigidArea(new Dimension(20,10)));
-			
+
 		JButton btnAdd = new JButton("Adicionar Elemento");
 		btnAdd.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btnAdd.addActionListener(new ActionListener() {
@@ -62,12 +53,44 @@ public class Menu extends JFrame {
 			}
 		});
 		contentPane.add(btnAdd);
+		
+		// separating first and second button
+		contentPane.add(Box.createRigidArea(new Dimension(20,10)));
+		
+		JButton btnRandomAdd = new JButton("Adicionar Elemento Aleatorio");
+		btnRandomAdd.setAlignmentX(Component.CENTER_ALIGNMENT);
+		btnRandomAdd.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				callRandomAdd(tree);
+			}
+		});
+		contentPane.add(btnRandomAdd);
 			
+		
+		// separating buttons
+		contentPane.add(Box.createRigidArea(new Dimension(20,10)));
+		
+		JButton btnPrintOrders = new JButton("Imprimir ordens (inorder, posorder, preorder)");
+		btnPrintOrders.setAlignmentX(Component.CENTER_ALIGNMENT);
+		btnPrintOrders.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				callPrintOrder(tree);
+			}
+		});
+		contentPane.add(btnPrintOrders);
 			
 		contentPane.add(applet);
+		paintTree(tree);
+	}
+	
+	private void paintTree(Tree tree) {
+		
 		Toolkit tk = Toolkit.getDefaultToolkit();
-		int xSize = ((int)tk.getScreenSize().getWidth() / 2);
-		applet.init(tree.root, xSize - 50);
+		
+		int xSize = (int)tk.getScreenSize().getWidth();
+		applet.init(tree, xSize);
+		
+		applet.repaint();
 	}
 	
 	private void callAddElementFrame(Tree tree) {
@@ -75,7 +98,33 @@ public class Menu extends JFrame {
 				JOptionPane.showInputDialog(contentPane, "Digite o valor para adicionar", null)
 		);
 		
-		tree.insert(tree.root, value);		
+		tree.insert(tree.root, value);
+		
+		paintTree(tree);	
+	}
+	
+	private void callRandomAdd(Tree tree) {
+		
+		Random rnd = new Random();
+		
+		int value = rnd.nextInt(100);
+		
+		tree.insert(tree.root, value);
+		
+		paintTree(tree);
+	}
+
+	private void callPrintOrder(Tree tree) {
+		
+		LinkedList<Integer> preorder = tree.getOrder(0, null, tree.root);
+		LinkedList<Integer> inorder = tree.getOrder(1, null, tree.root);
+		LinkedList<Integer> posorder = tree.getOrder(2, null, tree.root);
+		
+		String text = new String("Pre order: " + preorder.toString() + "\n In order: " + inorder.toString() + "\n Pos order: " + posorder.toString());
+		
+		JOptionPane.showMessageDialog(contentPane, text, "Order", JOptionPane.INFORMATION_MESSAGE);		
+		
 		
 	}
+
 }

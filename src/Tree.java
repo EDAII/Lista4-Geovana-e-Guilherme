@@ -1,3 +1,4 @@
+import java.util.LinkedList;
 
 public class Tree {
 	Node root;
@@ -32,6 +33,8 @@ public class Tree {
         // Update heights 
         y.height = max(height(y.left), height(y.right)) + 1; 
         x.height = max(height(x.left), height(x.right)) + 1; 
+        
+        if (y == this.root) this.root = x;
   
         // Return new root 
         return x; 
@@ -51,6 +54,8 @@ public class Tree {
         x.height = max(height(x.left), height(x.right)) + 1; 
         y.height = max(height(y.left), height(y.right)) + 1; 
   
+        if (x == this.root) this.root = y;
+        
         // Return new root 
         return y; 
     } 
@@ -108,5 +113,41 @@ public class Tree {
   
         /* return the (unchanged) node pointer */
         return node; 
-    } 
+    }
+    
+    public Node getParent(int value, Node root) {
+    	
+    	if (root == null) return null;
+    	
+    	  if (    (root.left != null && root.left.value == value) || 
+        		  (root.right != null && root.right.value == value))
+    		  return root;    		  
+    	  
+    	  if (value < root.value)
+    		  return getParent(value, root.left);
+    	  else if (value > root.value)
+    		  return getParent(value, root.right);
+    	
+    	return null;
+    }
+    
+    LinkedList<Integer> getOrder(int orderType, LinkedList<Integer> list, Node n){
+    	// orderType: 0 = preorder, 1 = inorder, 2 = posorder
+    	
+    	if (n == null) return null;
+    	if(list == null) list = new LinkedList<>();
+    	
+    	if (orderType == 0) list.add(n.value);
+
+    	 getOrder(orderType, list, n.left);
+    	 
+     	if (orderType == 1)list.add(n.value);
+
+    	 getOrder(orderType, list, n.right);
+  
+     	if (orderType == 2) list.add(n.value);
+      	
+    	return list;
+    	
+    }
 }

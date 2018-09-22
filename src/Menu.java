@@ -4,30 +4,26 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import java.awt.event.ActionListener;
-import java.util.LinkedList;
-import java.util.Random;
 import java.awt.event.ActionEvent;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Toolkit;
-import java.util.Random;
+import java.awt.EventQueue;
 
 @SuppressWarnings("serial")
 public class Menu extends JFrame {
 
 	private JPanel contentPane;
-	private DrawTree applet = new DrawTree();
 
-	public Menu(Tree tree) {
+	public Menu() {
 			
-		setTitle("¡rvores AVL");
+		setTitle("√Årvores");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
-		setExtendedState(JFrame.MAXIMIZED_BOTH); 
+		setSize(400, 400);
+		setLocationRelativeTo(null);
+		setExtendedState(JFrame.NORMAL); 
 		setUndecorated(false);
 		
 		contentPane = new JPanel();
@@ -36,7 +32,7 @@ public class Menu extends JFrame {
 		contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
 			
 		//Question section
-		JLabel lblQuestion = new JLabel("Escolha a opÁ„o");
+		JLabel lblQuestion = new JLabel("Escolha qual √°rvore deseja trabalhar:");
 		lblQuestion.setAlignmentX(Component.CENTER_ALIGNMENT);
 		lblQuestion.setHorizontalAlignment(SwingConstants.CENTER);
 		contentPane.add(lblQuestion);
@@ -44,87 +40,69 @@ public class Menu extends JFrame {
 		//separating label and first button
 		contentPane.add(Box.createRigidArea(new Dimension(40,40)));
 
-		JButton btnAdd = new JButton("Adicionar Elemento");
-		btnAdd.setAlignmentX(Component.CENTER_ALIGNMENT);
-		btnAdd.addActionListener(new ActionListener() {
+		JButton btnAVL= new JButton("AVL");
+		btnAVL.setAlignmentX(Component.CENTER_ALIGNMENT);
+		btnAVL.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				callAddElementFrame(tree);
+				callAVLTreeMenu();
 				
 			}
 		});
-		contentPane.add(btnAdd);
+		contentPane.add(btnAVL);
 		
 		// separating first and second button
 		contentPane.add(Box.createRigidArea(new Dimension(20,10)));
 		
-		JButton btnRandomAdd = new JButton("Adicionar Elemento Aleatorio");
-		btnRandomAdd.setAlignmentX(Component.CENTER_ALIGNMENT);
-		btnRandomAdd.addActionListener(new ActionListener() {
+		JButton btnRB = new JButton("R&B");
+		btnRB.setAlignmentX(Component.CENTER_ALIGNMENT);
+		btnRB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				callRandomAdd(tree);
+				callRBTreeMenu();
 			}
 		});
-		contentPane.add(btnRandomAdd);
+		contentPane.add(btnRB);
 			
-		
-		// separating buttons
-		contentPane.add(Box.createRigidArea(new Dimension(20,10)));
-		
-		JButton btnPrintOrders = new JButton("Imprimir ordens (inorder, posorder, preorder)");
-		btnPrintOrders.setAlignmentX(Component.CENTER_ALIGNMENT);
-		btnPrintOrders.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				callPrintOrder(tree);
-			}
-		});
-		contentPane.add(btnPrintOrders);
-			
-		contentPane.add(applet);
-		paintTree(tree);
-	}
-	
-	private void paintTree(Tree tree) {
-		
-		Toolkit tk = Toolkit.getDefaultToolkit();
-		
-		int xSize = (int)tk.getScreenSize().getWidth();
-		applet.init(tree, xSize);
-		
-		applet.repaint();
-	}
-	
-	private void callAddElementFrame(Tree tree) {
-		int value = Integer.parseInt(
-				JOptionPane.showInputDialog(contentPane, "Digite o valor para adicionar", null)
-		);
-		
-		tree.insert(tree.root, value);
-		
-		paintTree(tree);	
-	}
-	
-	private void callRandomAdd(Tree tree) {
-		
-		Random rnd = new Random();
-		
-		int value = rnd.nextInt(100);
-		
-		tree.insert(tree.root, value);
-		
-		paintTree(tree);
-	}
 
-	private void callPrintOrder(Tree tree) {
+	}
+	
+	private void callAVLTreeMenu() {
 		
-		LinkedList<Integer> preorder = tree.getOrder(0, null, tree.root);
-		LinkedList<Integer> inorder = tree.getOrder(1, null, tree.root);
-		LinkedList<Integer> posorder = tree.getOrder(2, null, tree.root);
-		
-		String text = new String("Pre order: " + preorder.toString() + "\n In order: " + inorder.toString() + "\n Pos order: " + posorder.toString());
-		
-		JOptionPane.showMessageDialog(contentPane, text, "Order", JOptionPane.INFORMATION_MESSAGE);		
-		
+
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					Node node = new Node(10);
+					AVLTree tree = new AVLTree(node); 
+			        tree.insert(tree.root, 30); 
+					AVLTreeMenu frame = new AVLTreeMenu(tree);
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+
 		
 	}
+	
+	private void callRBTreeMenu() {
+		
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					Node node = new Node(10, 1);
+					RBTree tree = new RBTree(node); 
+			        tree.insert(tree.root, 30); 
+					RBMenu frame = new RBMenu(tree);
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+
+		
+	}
+	
 
 }

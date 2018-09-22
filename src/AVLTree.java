@@ -1,9 +1,9 @@
 import java.util.LinkedList;
 
-public class Tree {
+public class AVLTree {
 	Node root;
 	
-	Tree(Node root){
+	AVLTree(Node root){
 		this.root = root;
 	}
 	

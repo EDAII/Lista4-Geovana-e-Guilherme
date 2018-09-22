@@ -6,15 +6,7 @@ public class Main {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Node node = new Node(10);
-					Tree tree = new Tree(node);
-			        tree.root = tree.insert(tree.root, 10); 
-			        tree.root = tree.insert(tree.root, 20); 
-			        tree.root = tree.insert(tree.root, 30); 
-			        tree.root = tree.insert(tree.root, 40); 
-			        tree.root = tree.insert(tree.root, 50); 
-			        tree.root = tree.insert(tree.root, 25); 
-					Menu frame = new Menu(tree);
+					Menu frame = new Menu();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();

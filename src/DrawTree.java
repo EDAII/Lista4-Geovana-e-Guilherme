@@ -24,14 +24,24 @@ class DrawTree extends JComponent {
         int width;
         Node r = null;
         
-        Tree tree = null;
+        AVLTree AVLtree = null;
+        RBTree RBtree = null;
 
-        public void init(Tree tree, int x) {
+        public void init(AVLTree tree, int x) {
             // Initialize drawing colors
             setBackground(bg);
             setForeground(fg);
             r = tree.root;
-            this.tree = tree;
+            this.AVLtree = tree;
+            width = x;
+        }
+        
+        public void init(RBTree tree, int x) {
+            // Initialize drawing colors
+            setBackground(bg);
+            setForeground(fg);
+            r = tree.root;
+            this.RBtree = tree;
             width = x;
         }
 
@@ -41,10 +51,10 @@ class DrawTree extends JComponent {
             g2 = (Graphics2D) g;
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             getSize();
-            inorder(r, 0, width, 80);
+            inorder(r, 100, width, 100);
         }
 
-        public void draw(int x1, int x2, int y, String n, int d) {
+        public void draw(int x1, int x2, int y, Node n, int d) {
             g2.setStroke(stroke);
 
             g2.setPaint(Color.black);
@@ -53,15 +63,25 @@ class DrawTree extends JComponent {
                 g2.draw(new Line2D.Double(x2, y - 30, x + 15, y));
             else if (d == 2)
                 g2.draw(new Line2D.Double(x + 15, y, x1 + 30, y - 30));
-            g2.setPaint(Color.blue);
+            g2.setPaint(getPaint(n));
             Shape circle = new Ellipse2D.Double((x1 + x2) / 2, y, 30, 30);
             g2.draw(circle);
             g2.fill(circle);
             g2.setPaint(Color.white);
-            g2.drawString(n, x + 10, y + 18);
+            g2.drawString(n.value + "", x + 10, y + 18);
+        } 
+        
+        Color getPaint(Node n) {
+           	if (RBtree != null) {
+        		if (n.color == 0) 
+        			return Color.BLACK;
+        		else 
+        			return Color.RED;
+        	} else {
+        		return Color.blue;
+        	}
         }
-
-        int x1 = 500, y1 = 30;
+        
 
         void inorder(Node r, int x1, int x2, int y) {
             if (r == null)
@@ -69,18 +89,27 @@ class DrawTree extends JComponent {
 
             inorder(r.left, x1, (x1 + x2) / 2, y + 40);
             
-            Node parent = tree.getParent(r.value, tree.root);
+            Node parent = getParent(r.value);
             
             if (parent == null)
-                draw(x1, x2, y, r.value + "", 0);
+                draw(x1, x2, y, r, 0);
             else {
                 if (parent.value < r.value)
-                    draw(x1, x2, y, r.value + "", 2);
+                    draw(x1, x2, y, r , 2);
                 else
-                    draw(x1, x2, y, r.value + "", 1);
+                    draw(x1, x2, y, r, 1);
             }
             
-            draw(x1, x2, y, String.valueOf(r.value) + "", 0);
+            draw(x1, x2, y, r, 0);
             inorder(r.right, (x1 + x2) / 2, x2, y + 40);
+        }
+        
+        Node getParent(int value) {
+        	if (RBtree != null) 
+        		return RBtree.getParent(value, r);
+        	else
+        		return AVLtree.getParent(value, r);
+        	
+        	
         }
     }

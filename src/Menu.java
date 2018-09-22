@@ -90,10 +90,10 @@ public class Menu extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Node node = new Node(10, 1);
-					RBTree tree = new RBTree(node); 
+					RBTree tree = new RBTree(null); 
+			        tree.insert(tree.root, 10); 
 			        tree.insert(tree.root, 30); 
-					RBMenu frame = new RBMenu(tree);
+			        RBMenu frame = new RBMenu(tree);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();

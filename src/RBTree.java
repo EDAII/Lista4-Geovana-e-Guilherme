@@ -2,6 +2,8 @@
 public class RBTree {
 	Node root;
 	
+	Node lastAdd = null;
+	
 	RBTree(Node root){
 		this.root = root;
 	}
@@ -62,23 +64,37 @@ public class RBTree {
   
 	public void insert(Node root, int value) { 
     	
-		repairTree(addNode(root, value));
+		addNode(root, value);
+		
+		repairTree(this.lastAdd);
+		this.lastAdd = null;	
     	
     }
+
     
     private Node addNode(Node node, int value) { 
     	  
         /* 1.  Perform the normal BST insertion */
-        if (node == null) 
-            return (new Node(value, 1)); 
-  
+        if (node == null) {
+        	
+        	Node newNode = new Node(value, 1);
+        	
+        	this.lastAdd = newNode;
+        	
+        	if(this.root == null) this.root = newNode;
+        	
+        	return newNode; 
+        }
+        
+        
         if (value < node.value) 
             node.left = addNode(node.left, value); 
         else if (value > node.value) 
             node.right = addNode(node.right, value); 
-        else // Duplicate values not allowed 
-            return node; 
-  
+        else { // Duplicate values not allowed 
+        	this.lastAdd = null;
+        	return node; 
+        }
         /* 2. Update height of this ancestor node */
         node.height = 1 + max(height(node.left), 
                               height(node.right)); 
@@ -88,13 +104,19 @@ public class RBTree {
     }
     
     private void repairTree(Node node) {
-    	if (getParent(node.value, this.root) == null) {
+    	
+    	// node is the inserted node
+    	
+    	Node parent = getParent(node.value, this.root);
+    	Node uncle = getUncle(node);
+    	
+    	if (parent == null) {
     		insert_case1(node);
-    	} else if (getParent(node.value, this.root).color == 0) {
-    		return;
-    	} else if (getUncle(node).color == 1) {
+    	} else if (parent.color == Node.BLACK) {
+    		return; // case 2, nothing to do
+    	} else if (uncle != null && uncle.color == Node.RED) {
     		insert_case3(node);
-    	} else {
+    	} else { // parent is red and uncle is black
     		insert_case4(node);
     	}
     }
@@ -105,37 +127,63 @@ public class RBTree {
     }
     
     private void insert_case3(Node n){
-    	getParent(n.value, this.root).color = 0;
-		getUncle(n).color = 0;
-		getGrandparent(n).color = 1;
-		repairTree(getGrandparent(n));
+    	getParent(n.value, this.root).color = Node.BLACK;
+		getUncle(n).color = Node.BLACK;
+		
+		Node gp = getGrandparent(n);
+		gp.color = Node.RED;
+		
+		repairTree(gp);
+		
     }
     
     private void insert_case4(Node n){
-    	Node p = getParent(n.value, this.root);
-     	Node g = getGrandparent(n);
+    	Node parent = getParent(n.value, this.root);
+     	Node gParent = getGrandparent(n);
+     	
+     	boolean rotated = false;
 
-	    if (n == g.left.right) {
-	    	leftRotate(p);
-	    	n = n.left;
-	    } else if (n == g.right.left) {
-	    	rightRotate(p);
-	    	n = n.right; 
+	    if (gParent.left != null && gParent.left.right != null &&  n == gParent.left.right) {
+	    	gParent.left = leftRotate(parent);
+	    	rotated = true;
+	    } else if (gParent.right != null && gParent.right.left != null &&n == gParent.right.left) {
+	    	gParent.right = rightRotate(parent);
+	    	rotated = true;
 	    }
 
-	    insert_case4step2(n);
+	    
+	    if (rotated)
+	    	insert_case4step2(parent);
+	    else
+	    	insert_case4step2(n);
     }
     
     private void insert_case4step2(Node n){
-    	Node p = getParent(n.value, this.root);
-    	Node g = getGrandparent(n);
+    	Node parent = getParent(n.value, this.root);
+    	Node gParent = getGrandparent(n);
+    	Node greatGParent = getGrandparent(parent);
 
-    	if (n == p.left)
-    		rightRotate(g);
-    	else
-    		leftRotate(g);
-    	p.color = 0;
-    	g.color = 1;
+    	Node temp = null;
+    	if (n == parent.left) 
+    		temp = rightRotate(gParent);
+    	else 
+    		temp = leftRotate(gParent);
+    	
+    	if (greatGParent != null) {
+			
+			boolean isLeft = false;
+			
+			if (greatGParent.left != null && greatGParent.left == gParent)
+				isLeft = true;
+			
+			if (isLeft)
+				greatGParent.left = temp;
+			else
+				greatGParent.right = temp;
+		} 
+    	
+    	parent.color = Node.BLACK;
+    	gParent.color = Node.RED;
     }
     
     public Node getParent(int value, Node root) {

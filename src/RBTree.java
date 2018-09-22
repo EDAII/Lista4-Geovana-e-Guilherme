@@ -62,8 +62,7 @@ public class RBTree {
   
 	public void insert(Node root, int value) { 
     	
-    	addNode(root, value);
-    	repairTree(root);
+		repairTree(addNode(root, value));
     	
     }
     

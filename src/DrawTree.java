@@ -73,7 +73,7 @@ class DrawTree extends JComponent {
         
         Color getPaint(Node n) {
            	if (RBtree != null) {
-        		if (n.color == 0) 
+        		if (n.color == Node.BLACK) 
         			return Color.BLACK;
         		else 
         			return Color.RED;

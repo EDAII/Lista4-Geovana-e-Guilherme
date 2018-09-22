@@ -101,7 +101,7 @@ public class RBTree {
     
     private void insert_case1(Node n){
     	if (getParent(n.value, this.root) == null)
-    		n.color = 0;
+    		n.color = Node.BLACK;
     }
     
     private void insert_case3(Node n){

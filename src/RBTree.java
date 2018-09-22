@@ -21,42 +21,42 @@ public class RBTree {
 	  
     // A utility function to right rotate subtree rooted with y 
     // See the diagram given above. 
-	Node rightRotate(Node y) { 
-		Node x = y.left; 
-		Node T2 = x.right; 
+	Node rightRotate(Node node) { 
+		Node lChild = node.left; 
+		Node lChild_right = lChild.right; 
   
         // Perform rotation 
-        x.right = y; 
-        y.left = T2; 
+        lChild.right = node; 
+        node.left = lChild_right; 
   
         // Update heights 
-        y.height = max(height(y.left), height(y.right)) + 1; 
-        x.height = max(height(x.left), height(x.right)) + 1; 
+        node.height = max(height(node.left), height(node.right)) + 1; 
+        lChild.height = max(height(lChild.left), height(lChild.right)) + 1; 
         
-        if (y == this.root) this.root = x;
+        if (node == this.root) this.root = lChild;
   
         // Return new root 
-        return x; 
+        return lChild; 
     } 
 	  
     // A utility function to left rotate subtree rooted with x 
     // See the diagram given above. 
-	Node leftRotate(Node x) { 
-		Node y = x.right; 
-		Node T2 = y.left; 
+	Node leftRotate(Node node) { 
+		Node rChild = node.right; 
+		Node rChild_left = rChild.left; 
   
         // Perform rotation 
-        y.left = x; 
-        x.right = T2; 
+        rChild.left = node; 
+        node.right = rChild_left; 
   
         //  Update heights 
-        x.height = max(height(x.left), height(x.right)) + 1; 
-        y.height = max(height(y.left), height(y.right)) + 1; 
+        node.height = max(height(node.left), height(node.right)) + 1; 
+        rChild.height = max(height(rChild.left), height(rChild.right)) + 1; 
   
-        if (x == this.root) this.root = y;
+        if (node == this.root) this.root = rChild;
         
         // Return new root 
-        return y; 
+        return rChild; 
     } 
   
   
